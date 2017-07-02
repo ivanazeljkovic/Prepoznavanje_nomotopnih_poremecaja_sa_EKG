@@ -29,7 +29,7 @@ def k_means_signal(name):
 
     #cv2.imshow('ECG', res2)
     # na slici se prikazuje signal koji je izdvojen iz originalne slike upotrebom klasterizacije (K-means sa 2 klastera)
-    cv2.imwrite('K-means-signal.jpg', res2)
+    cv2.imwrite('Output-images/K-means-signal.jpg', res2)
 
 
 
@@ -46,12 +46,12 @@ def get_grid(name):
 
     #cv2.imshow('Grid', mask_grid_inv)
     # na slici se prikazuje mreza koja je izdvojena iz originalne slike
-    cv2.imwrite('grid.jpg', mask_grid_inv)
+    cv2.imwrite('Output-images/grid.jpg', mask_grid_inv)
 
 
 
 def get_vertical_lines():
-    img = cv2.imread('grid.jpg')
+    img = cv2.imread('Output-images/grid.jpg')
     height, width, depth = img.shape
     x_coordinates = []
 
@@ -74,7 +74,7 @@ def get_boundaries_of_complex(row_height):
     black_spaces = []
     boundaries_complex = []
 
-    img = cv2.imread('K-means-signal.jpg')
+    img = cv2.imread('Output-images/K-means-signal.jpg')
     img = cv2.bitwise_not(img)
     height, width, depth = img.shape
 
@@ -98,7 +98,7 @@ def get_boundaries_of_complex(row_height):
     for i in black_spaces:
         cv2.circle(img, (i[0], y), 1, (0, 0, 255), thickness=2, lineType=8, shift=0)
         cv2.circle(img, (i[1], y), 1, (0, 255, 0), thickness=2, lineType=8, shift=0)
-    cv2.imwrite('Start-end-space-between-2-R-peak.jpg', img)
+    cv2.imwrite('Output-images/Start-end-space-between-2-R-peak.jpg', img)
     #cv2.imshow('Boundaries of space between two P-QRS-T complex', img)
 
 
@@ -111,10 +111,10 @@ def get_boundaries_of_complex(row_height):
     # kao desnu granicu poslednjeg P-QRS-T kompleksa postavljamo poslednji pixel slike
     boundaries_complex.append(width)
 
-    img = cv2.imread('K-means-signal.jpg')
+    img = cv2.imread('Output-images/K-means-signal.jpg')
     for x in boundaries_complex:
         cv2.circle(img, (x, y), 1, (255, 0, 0), thickness=2, lineType=8, shift=0)
-    cv2.imwrite('Boundaries-of-PQRST-complex.jpg', img)
+    cv2.imwrite('Output-images/Boundaries-of-PQRST-complex.jpg', img)
     #cv2.imshow('Boundaries of P-QRS-T complex', img)
 
     return boundaries_complex
@@ -125,7 +125,7 @@ def find_peaks(boundaries, grid_row_height):
     # trazimo tacke na konturi EKG signala koje se nalaze iznad translirane x ose ( x = 1.5 * visina celije mreze)
     height_limit = grid_row_height*1.5
 
-    img = cv2.imread('K-means-signal.jpg')
+    img = cv2.imread('Output-images/K-means-signal.jpg')
     imgray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     ret, thresh = cv2.threshold(imgray, 180, 180, 180)
     contours = cv2.findContours(thresh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)[1]
@@ -139,7 +139,7 @@ def find_peaks(boundaries, grid_row_height):
     contour_signal = contours[areas[-1][1]]
     cv2.drawContours(img, contours, areas[-1][1], (255, 0, 0), 1)
     #cv2.imshow('Contour of ECG signal', img)
-    cv2.imwrite('Contour-ECG.jpg', img)
+    cv2.imwrite('Output-images/Contour-ECG.jpg', img)
 
     # definisemo listu recnika gde je kljuc redni broj P-QRS-T kompleksa, a vrednost je lista uredjenih parova
     # koji predstavljaju koordinate tacaka koje su kandidati za vrh R zupca u posmatranom kompleksu
@@ -167,10 +167,10 @@ def find_peaks(boundaries, grid_row_height):
         peaks.append(peaks_of_one_complex[0])
 
 
-    img = cv2.imread('K-means-signal.jpg')
+    img = cv2.imread('Output-images/K-means-signal.jpg')
     for x in peaks:
         cv2.circle(img, (x[1], x[0]), 1, (0, 0, 255), thickness=2, lineType=8, shift=0)
-    cv2.imwrite('Peaks-of-PQRST-complex.jpg', img)
+    cv2.imwrite('Output-images/eaks-of-PQRST-complex.jpg', img)
     #cv2.imshow('Peaks of all P-QRS-T complex', img)
 
     return peaks
@@ -311,7 +311,7 @@ def check_sin_arrhythmia(width_R_R_intervals):
 
 
 if __name__ == '__main__':
-    file_name = 'sinusna_tahikardija'
+    file_name = 'Input-images/sinusna_tahikardija'
     k_means_signal(file_name)
     get_grid(file_name)
     vertical_lines_coordinate = get_vertical_lines()
