@@ -8,6 +8,8 @@ frequency = [300, 150, 100, 75, 60, 50]
 #Sinusna tahikardija  -> 100 < frekvencija < 140
 #Sinusna (respiratorna) aritmija -> Naizmenicni periodi tahikardije i bradikardije
 
+
+
 def load_image(name):
     return cv2.imread(name + '.jpg')
 
@@ -232,7 +234,7 @@ def check_sin_tachycardia_bradycardia(peaks, vertical_lines_coordinate):
         column_width = vertical_lines_coordinate[index_of_line+1] - vertical_lines_coordinate[index_of_line]
 
     if(number_of_column >= 2 and number_of_column <= 3):
-        print("Na testiranom EKG-u je prikazana: SINUSNA TAHIKARDIJA --> frekvencija: [" + str(frequency[number_of_column-1]) + ":" + str(frequency[number_of_column]) + "]")
+        print("Na testiranom EKG-u je prikazana: SINUSNA TAHIKARDIJA --> frekvencija: [" + str(frequency[number_of_column]) + ", " + str(frequency[number_of_column-1]) + "]")
 
     elif(number_of_column >= 5):
         print("Na testiranom EKG-u je prikazana: SINUSNA BRADIKARDIJA --> frekvencija: <= " + str(frequency[-1] if number_of_column > len(frequency) else frequency[number_of_column-1]))
